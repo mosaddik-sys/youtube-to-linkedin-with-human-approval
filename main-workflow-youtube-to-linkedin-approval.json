@@ -1,0 +1,689 @@
+{
+  "name": "HUMAN APPROVAL",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 3,
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        -432
+      ],
+      "id": "6d001486-8cc9-4a39-a1dc-b038e2d17dd1",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1360,
+        -192
+      ],
+      "id": "988f7e3f-f23c-45a3-8e4f-4275da47f506",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "mjjgXOW0hfXYf0CJ",
+          "name": "OpenAI account 377"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        -192
+      ],
+      "id": "63ec2f68-308b-4c39-9dcc-f0a3b44815db",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "7ii6dCHzPX1rdg3A",
+          "name": "Google Gemini(PaLM) Api account 1361"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.script }}",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=You are an AI assistant that analyzes YouTube videos Script.\nYour task is to read the full transcript provided to you andy\ngenerate a clear and human sounding summary. Only summarize the\ncontent that actually appears in the transcript. Do not add\nextra topics, assumptions, or ideas that were not included in\nthe video. Keep the summary accurate, easy to read, and written\nin natural human language. Focus only on the main ideas, key\ndiscussions, and important points from the video or podcast. If\nthe transcript is noisy or includes filler words, ignore them\nand still produce a clean summary."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1360,
+        -464
+      ],
+      "id": "304a3e54-ab67-46d6-acbf-4abcefecb3a0",
+      "name": "SUMMERIZER"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=\nYou are a professional email writer. Your sole purpose is to receive \na video title and its AI-generated summary, then output a single \nclean, professional plain text email body — nothing else.\n\n---\n\n## YOUR TASK\n\nYou will receive:\n- `{{ $('LOOP').item.json.title }}` — The title of the YouTube video\n- `{{ $json.output }}` — The AI-generated summarized transcript of the video\n\n---\n\n## OUTPUT RULES\n\n- Plain text only, no HTML tags\n- No markdown formatting\n- No bullet symbols or special characters\n- No preamble or explanation before the email\n- No commentary after the email\n- Keep line width under 80 characters\n\n---\n\n## EMAIL STRUCTURE\n\n1. GREETING\n   \"Hello,\"\n\n2. OPENING LINE\n   One sentence explaining the purpose of the email.\n   Example: \"Please find below the AI-generated summary for the \n   following video, pending your review and approval.\"\n\n3. VIDEO TITLE\n   Label: \"Video Title:\"\n   The title on the same or next line\n\n4. DIVIDER\n   A single blank line\n\n5. SUMMARY\n   Label: \"Summary:\"\n   The full summary text in clean readable paragraphs\n   Line height comfortable, wrapped at 80 characters\n\n6. CLOSING\n   \"Please review the summary above and approve or reject \n   using the buttons provided.\"\n\n7. SIGN OFF\n   \"Best regards,\"\n   \"Neural Dispatch System\"\n\n---\n\n## TONE\n\nProfessional, clear, and neutral. Written as if a trusted \ncolleague is sending a document for review. No technical \njargon, no system language, no dramatic labels.\n\n---\n\n## OUTPUT FORMAT\n\nReturn only the plain text email body.\nNothing before. Nothing after.\nDo not use (*) and (#).\nClean professional email"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1712,
+        -464
+      ],
+      "id": "c536b18e-6325-4e4d-8398-bbc8d78d455b",
+      "name": "EMAIL GENERATOR"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1376,
+        256
+      ],
+      "id": "fabba561-5dc0-426a-b21f-542ec84d9519",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "mjjgXOW0hfXYf0CJ",
+          "name": "OpenAI account 377"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1568,
+        256
+      ],
+      "id": "8511fda4-8da1-4317-8836-771f4e096927",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "7ii6dCHzPX1rdg3A",
+          "name": "Google Gemini(PaLM) Api account 1361"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('SUMMERIZER').item.json.output }}",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=You are an expert LinkedIn content writer. Your sole purpose is to \nreceive a video summary and its URL, then output a single \nready-to-publish LinkedIn post that drives viewers to watch the \nfull video — nothing else.\n\n---\n\n## YOUR TASK\n\nYou will receive:\n- `{{ $('SUMMERIZER').item.json.output }}` — The AI-generated summarized transcript of the video\n- `{{ $json.videoUrl }}` — The full YouTube video URL\n\n---\n\n## YOUR GOAL\n\nWrite a post that makes the reader feel they are MISSING OUT if they \ndon't click the video link. Every sentence must serve one purpose — \npulling the reader toward that URL.\n\nDo NOT give everything away. Tease the insights. Create curiosity gaps. \nMake the summary feel like a trailer, not a spoiler.\n\n---\n\n## POST STRUCTURE\n\n1. HOOK (1-2 lines)\n   - Must create immediate curiosity or tension\n   - Reveal just enough to make them want more\n   - NO emojis on the first line\n   - NO generic openers like \"This video changed my life\"\n   - Start with a bold incomplete idea that the video completes\n\n2. CURIOSITY BRIDGE (2-3 lines)\n   - Expand the hook slightly without revealing the full insight\n   - Use phrases like \"But here's what most people miss...\"\n   - Build tension — make them feel the answer is just one click away\n\n3. TEASER BULLETS (3-4 points)\n   - Each bullet hints at an insight WITHOUT fully explaining it\n   - Start each with a relevant single emoji\n   - End each bullet with an open loop — a half-revealed idea\n   - Example style: \"Why the common advice on X is completely backwards...\"\n   - Never close the loop — the video does that\n\n4. CALL TO ACTION (2-3 lines)\n   - Direct, urgent, and specific\n   - Tell them exactly what they will get by watching\n   - End with the video URL on its own line\n\n   Format exactly like this:\n   \n   Watch the full breakdown here:\n   \n\n5. HASHTAGS (1 line)\n   - 3 to 5 relevant, specific hashtags\n   - Last line of the post, separated by spaces\n   - NO generic hashtags like #love #life #motivation\n\n---\n\n## WRITING RULES (NON-NEGOTIABLE)\n\n- Total length: 120 to 200 words (excluding URL and hashtags)\n- First person, conversational, confident tone\n- Short lines — max 2 sentences per paragraph for mobile readability\n- NO corporate jargon or buzzwords\n- NO phrases like \"In today's world\" or \"Game changer\" or \"Deep dive\"\n- Never reveal the full insight — always leave an open loop\n- Never mention AI, summaries, or automation\n- Must feel written by a curious, knowledgeable human\n- Every line must either build curiosity or push toward the video link\n\n---\n\n## OUTPUT FORMAT\n\nReturn only the LinkedIn post text.\nNothing before. Nothing after.\nNo labels, no explanations, no preamble."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1376,
+        0
+      ],
+      "id": "6649eec1-7ec9-4c38-9b78-91eb6a1230c4",
+      "name": "CONTENT GENERATOR"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map((item, index) => {\n  // Get the URL and title from the input\n  const url = item.json.url;\n  const title = item.json.title || null;\n  // Extract the video ID from the URL\n  let videoId = null;\n  \n  if (url && url.includes('v=')) {\n    videoId = url.split('v=')[1].split('&')[0];\n  }\n  // id starts from 1; change to index+2 if you want to start from 2\n  return {\n    json: {\n      id: index + 2,\n      videoId,\n      title\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -224
+      ],
+      "id": "c665f93e-728b-4d69-9f69-fb56527ed290",
+      "name": "VIDEOID"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract video URLs, titles, and add an id starting from 2\nreturn items.map((item, index) => {\n  const videoId = item.json.id.videoId;\n  const title = item.json.snippet.title\n  return {\n    json: {\n      id: index + 2,\n      url: `https://www.youtube.com/watch?v=${videoId}`,\n      title: title\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -224
+      ],
+      "id": "c97e6e76-95bf-4f79-b416-8b7a7f89e86c",
+      "name": "URL , TITLE"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('EDIT').item.json.thumbnailUrl }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1760,
+        0
+      ],
+      "id": "0cab3d88-37e4-4c62-8d16-6852ea7de7e7",
+      "name": "THUMBNAIL"
+    },
+    {
+      "parameters": {
+        "person": "UPEDA8BpO6",
+        "text": "={{ $json.output }}",
+        "shareMediaCategory": "IMAGE",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        0
+      ],
+      "id": "79cb022a-148f-4137-9d64-e03a98e0315b",
+      "name": "POST",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "3bzVYDZuaKMHihVv",
+          "name": "LinkedIn account 102"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "www.mosaddik321@gmail.com",
+        "subject": "Aproval required",
+        "message": "={{ $json.output }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 10,
+              "resumeUnit": "minutes"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2064,
+        -464
+      ],
+      "id": "a44c5aeb-2d14-47e5-b2eb-d37048e677d7",
+      "name": "APROVAL",
+      "webhookId": "de5d6591-b37b-4fbd-b0a3-712316a99710",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Qix6qoyJkHPH0uNI",
+          "name": "Gmail account 710"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const videoData = $('GET VIDEO DATA').first().json;\nconst videoId = videoData.id.videoId;\nconst thumbnailUrl = videoData.snippet.thumbnails.high.url;\n\nreturn [{\n  json: {\n    videoId: videoId,\n    thumbnailUrl: thumbnailUrl,\n    videoUrl: `https://www.youtube.com/watch?v=${videoId}`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        0
+      ],
+      "id": "d2c84f87-b778-4c93-8d22-5efc936251a9",
+      "name": "URL"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        640,
+        -224
+      ],
+      "id": "bfd69bbf-ac9f-4799-ba53-b2993686ef81",
+      "name": "LOOP"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "fc697d0b-7fe6-4b5d-a2b2-11dd31ce7137",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        2400,
+        16
+      ],
+      "id": "0b03292b-c7ea-4453-9e76-58f08468f69a",
+      "name": "FILTER"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.supadata.ai/v1/transcript?url=https://www.youtube.com/watch?v={{ $json.videoId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "sd_bf0f466d47f48c9a1731f490f5b04eef"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        912,
+        -464
+      ],
+      "id": "35f0d5e4-8b02-48b6-97f9-a02f68730389",
+      "name": "TRANSCRIPT"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combine all \"text\" fields from the content array into one string\nlet script = \"\";\nfor (const item of items) {\n    const content = item.json?.content;\n\n    if (Array.isArray(content)) {\n        for (const segment of content) {\n            if (typeof segment?.text === \"string\") {\n                script += segment?.text + \" \";\n            }\n        }\n    }\n}\n\nscript = script.trim();\n\nreturn [\n    {\n        json: { script },\n    },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        -464
+      ],
+      "id": "e78475d9-38b1-4d54-8a5e-44b5f3fcb059",
+      "name": "MERGED TRANSCRIPT"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "limit": 5,
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -432
+      ],
+      "id": "720ce4fd-2ab8-446c-b740-41a0dc398703",
+      "name": "GET VIDEO DATA",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "58LDvhZqM95NAfCo",
+          "name": "YouTube account 177"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        -464
+      ],
+      "id": "f16d2923-4ce2-4f4c-a2df-a7742f53be9f",
+      "name": "WAIT",
+      "webhookId": "811530c3-649d-4f68-9e45-335608d93851"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dd40a8ad-102c-4c5e-bacf-37d6ee53ed4f",
+              "name": "thumbnailUrl",
+              "value": "={{ $json.thumbnailUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "c4f27d99-9dd3-4d60-9d39-f5666d47a1cb",
+              "name": "videoUrl",
+              "value": "={{ $json.videoUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1152,
+        0
+      ],
+      "id": "6867687a-c260-4ddf-b237-845ca2a8791e",
+      "name": "EDIT"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "GET VIDEO DATA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "SUMMERIZER",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "EMAIL GENERATOR",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "SUMMERIZER",
+            "type": "ai_languageModel",
+            "index": 1
+          },
+          {
+            "node": "EMAIL GENERATOR",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "SUMMERIZER": {
+      "main": [
+        [
+          {
+            "node": "EMAIL GENERATOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMAIL GENERATOR": {
+      "main": [
+        [
+          {
+            "node": "APROVAL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "CONTENT GENERATOR",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "CONTENT GENERATOR",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "CONTENT GENERATOR": {
+      "main": [
+        [
+          {
+            "node": "THUMBNAIL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VIDEOID": {
+      "main": [
+        [
+          {
+            "node": "LOOP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL , TITLE": {
+      "main": [
+        [
+          {
+            "node": "VIDEOID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "THUMBNAIL": {
+      "main": [
+        [
+          {
+            "node": "POST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "APROVAL": {
+      "main": [
+        [
+          {
+            "node": "FILTER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL": {
+      "main": [
+        [
+          {
+            "node": "EDIT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LOOP": {
+      "main": [
+        [
+          {
+            "node": "URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WAIT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FILTER": {
+      "main": [
+        [
+          {
+            "node": "LOOP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TRANSCRIPT": {
+      "main": [
+        [
+          {
+            "node": "MERGED TRANSCRIPT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MERGED TRANSCRIPT": {
+      "main": [
+        [
+          {
+            "node": "SUMMERIZER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET VIDEO DATA": {
+      "main": [
+        [
+          {
+            "node": "URL , TITLE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WAIT": {
+      "main": [
+        [
+          {
+            "node": "TRANSCRIPT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EDIT": {
+      "main": [
+        [
+          {
+            "node": "CONTENT GENERATOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "b07d73a7-ba08-4d1a-89c1-5f377d3d80b4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5f00bba974abf03cb5183d4d65f8a9645a781b04770df6a7d08284fca87d50b3"
+  },
+  "nodeGroups": [],
+  "id": "FmuzskVI8O2oPwSU",
+  "tags": []
+}
